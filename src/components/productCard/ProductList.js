@@ -12,6 +12,7 @@ const ProductList = () => {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [newCategory, setNewCategory] = useState('');
     const [categories, setCategories] = useState(['all', 'category1', 'category2']);
+    const [deleteCategoryConfirmation, setDeleteCategoryConfirmation] = useState(null); // Додана стейт-змінна для відображення модального вікна
 
     const addNewCategory = () => {
         setCategories((prevCategories) => [...prevCategories, newCategory]);
@@ -44,26 +45,37 @@ const ProductList = () => {
                 : products.filter((product) => product.category === selectedCategory);
     };
 
-
+    const handleDeleteCategory = (category) => {
+        setCategories(categories.filter((c) => c !== category));
+        setDeleteCategoryConfirmation(null); // Закрити модальне вікно після видалення
+    };
 
     return (
         <div className="container font-roboto">
             <Header currentPage="Page" itemCount={itemCount} />
             <div className="container mx-auto py-8">
-
                 <div className="mb-4 flex flex-wrap">
                     {categories.map((category) => (
-                        <button
-                            key={category}
-                            onClick={() => setSelectedCategory(category)}
-                            className={`mr-2 p-2 rounded ${
-                                selectedCategory === category ? 'bg-blue-600 text-white' : 'bg-gray-300'
-                            }`}
-                        >
-                            {category === 'all' ? 'Всі' : ` ${category}`}
-                        </button>
+                        <div key={category} className="mr-2 mb-2">
+                            <button
+                                onClick={() => setSelectedCategory(category)}
+                                className={`p-2 rounded ${
+                                    selectedCategory === category ? 'bg-blue-600 text-white' : 'bg-gray-300'
+                                }`}
+                            >
+                                {category === 'all' ? 'Всі' : ` ${category}`}
+                            </button>
+                            {category !== 'all' && (
+                                <button
+                                    onClick={() => setDeleteCategoryConfirmation(category)}
+                                    className="p-2 ml-2 bg-red-600 text-white rounded"
+                                >
+                                    Видалити
+                                </button>
+                            )}
+                        </div>
                     ))}
-                    <div className="mb-4">
+                    <div className="mb-4 ml-auto">
                         <input
                             type="text"
                             placeholder="Створити нову категорію"
@@ -79,6 +91,7 @@ const ProductList = () => {
                         </button>
                     </div>
                 </div>
+
 
 
 
@@ -112,6 +125,27 @@ const ProductList = () => {
                     </button>
                 )}
             </div>
+            {deleteCategoryConfirmation && (
+                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-4 rounded-md shadow-md">
+                        <p>Ви впевнені, що хочете видалити категорію "{deleteCategoryConfirmation}"?</p>
+                        <div className="mt-4 flex justify-end">
+                            <button
+                                className="px-4 py-2 bg-red-600 text-white rounded-md mr-2"
+                                onClick={() => handleDeleteCategory(deleteCategoryConfirmation)}
+                            >
+                                Видалити
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+                                onClick={() => setDeleteCategoryConfirmation(null)}
+                            >
+                                Відмінити
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
