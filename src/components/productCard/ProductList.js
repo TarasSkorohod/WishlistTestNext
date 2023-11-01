@@ -163,7 +163,7 @@ const ProductList = () => {
             {deleteCategoryConfirmation && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-4 rounded-md shadow-md">
-                        <p>Ви впевнені, що хочете видалити категорію "{deleteCategoryConfirmation}"?</p>
+                        <p>Ви впевнені, що хочете видалити категорію {deleteCategoryConfirmation}</p>
                         <div className="mt-4 flex justify-end">
                             <button
                                 className="px-4 py-2 bg-red-600  text-white rounded-md mr-2"
