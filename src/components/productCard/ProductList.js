@@ -82,10 +82,9 @@ const ProductList = () => {
 
 
 
-                <div className="mb-4">
-                    <div className="mb-4 grid grid-cols-2 items-center">
+                <div className="flex flex-col sm:flex-row items-center justify-between w-full">
+                    <div className="flex flex-col sm:flex-row items-center justify-between w-full">
                         <ProductHead />
-
                         <label className="relative inline-flex items-center cursor-pointer ml-auto">
                             <input
                                 type="checkbox"
@@ -98,6 +97,7 @@ const ProductList = () => {
                         </label>
                     </div>
                 </div>
+
                 {filterProducts().slice(0, visibleProducts).map((product, index) => (
                     <ProductCard
                         key={index}
