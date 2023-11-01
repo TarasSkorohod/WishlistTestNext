@@ -30,7 +30,7 @@ const ProductCard = ({ product, onDeleteProduct }) => {
                     <IconButton
                         onClick={() => toggleLike()}
                         style={{
-                            color: liked ? "red" : "inherit",
+                            color: liked ? "#405EFF" : "inherit",
                         }}
                     >
                         {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
