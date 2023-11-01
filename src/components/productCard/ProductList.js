@@ -1,11 +1,12 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import Header from "@/components/header/Header";
-import { productsData } from "../../../data/dataCardItem";
 import ProductHead from "@/components/productHead/ProductHead";
 import { IconButton } from "@mui/material";
 import Footer from "@/components/footer/Footer";
+import TextField from "@mui/material/TextField";
+import productsData from "@/components/serch/productsData.json";
 
 const ProductList = () => {
     const [products, setProducts] = useState(productsData);
@@ -16,41 +17,49 @@ const ProductList = () => {
     const [categories, setCategories] = useState(['all', 'category1', 'category2']);
     const [deleteCategoryConfirmation, setDeleteCategoryConfirmation] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const [filteredProducts, setFilteredProducts] = useState(productsData);
+
+    useEffect(() => {
+        const searchValue = searchQuery.toLowerCase();
+        const filtered = productsData.filter((product) =>
+            (selectedCategory === 'all' || product.category === selectedCategory) &&
+            (!showOnlyWithoutPhoto || !product.image) &&
+            (searchValue
+                ? (product.name && product.name.toLowerCase().includes(searchValue))
+                : true)
+        );
+
+        setFilteredProducts(filtered);
+    }, [searchQuery, selectedCategory, showOnlyWithoutPhoto, productsData]);
 
     const addNewCategory = () => {
         setCategories((prevCategories) => [...prevCategories, newCategory]);
         setNewCategory('');
-        setIsModalOpen(false); // Закрити модальне вікно після додавання категорії
+        setIsModalOpen(false);
     };
 
-    const toggleLike = (index) => {
-        const updatedProducts = [...products];
-        updatedProducts[index].liked = !updatedProducts[index].liked;
+    const toggleLike = (id) => {
+        const updatedProducts = products.map((product) =>
+            product.id === id ? { ...product, liked: !product.liked } : product
+        );
         setProducts(updatedProducts);
     };
 
-    const deleteProduct = (index) => {
-        const updatedProducts = [...products];
-        updatedProducts.splice(index, 1);
+    const deleteProduct = (id) => {
+        const updatedProducts = products.filter((product) => product.id !== id);
         setProducts(updatedProducts);
     };
 
-    const itemCount = products.length;
+    const itemCount = filteredProducts.length;
 
     const showMore = () => {
         setVisibleProducts(visibleProducts + 3);
     };
 
-    const filterProducts = () => {
-        return showOnlyWithoutPhoto
-            ? products.filter((product) => !product.photo)
-            : selectedCategory === 'all'
-                ? products
-                : products.filter((product) => product.category === selectedCategory);
-    };
-
-    const handleDeleteCategory = (category) => {
-        setCategories(categories.filter((c) => c !== category));
+    const handleDeleteCategory = (categoryToDelete) => {
+        setCategories((prevCategories) => prevCategories.filter((category) => category !== categoryToDelete));
         setDeleteCategoryConfirmation(null);
     };
 
@@ -59,8 +68,19 @@ const ProductList = () => {
             <Header currentPage="Page" itemCount={itemCount} />
             <div className="container mx-auto py-8">
                 <div className="mb-4 flex flex-wrap">
-                    {categories.map((category) => (
-                        <div key={category} className="mr-2 mb-2">
+                    <div className="mb-4">
+                        <TextField
+                            sx={{ width: 300 }}
+                            label="Пошук продукту"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </div>
+                <div className="mb-4 flex flex-wrap">
+
+                {categories.map((category) => (
+                    <div key={category} className="mr-2 mb-2">
                             <span
                                 onClick={() => setSelectedCategory(category)}
                                 className={`cursor-pointer p-2 h-[45px] rounded ${
@@ -89,14 +109,14 @@ const ProductList = () => {
 
 
                             </span>
-                        </div>
-                    ))}
-
-                    <div className="mb-4 ml-auto">
-                        <button onClick={() => setIsModalOpen(true)} className="  h-[45px] bg-blue-600 text-white rounded p-2 hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
-                            Додати категорію
-                        </button>
                     </div>
+                ))}
+
+                <div className="mb-4 ml-auto">
+                    <button onClick={() => setIsModalOpen(true)} className="  h-[45px] bg-blue-600 text-white rounded p-2 hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
+                        Додати категорію
+                    </button>
+                </div>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center justify-between w-full">
                     <div className="flex flex-col sm:flex-row items-center justify-between w-full">
@@ -115,16 +135,18 @@ const ProductList = () => {
                         <span className="pl-2">Image</span>
                     </div>
                 </div>
-                {filterProducts().slice(0, visibleProducts).map((product, index) => (
+                {filteredProducts.slice(0, visibleProducts).map((product) => (
                     <ProductCard
-                        key={index}
+                        key={product.id}
                         product={product}
-                        onToggleLike={() => toggleLike(index)}
-                        onDeleteProduct={() => deleteProduct(index)}
+                        onToggleLike={() => toggleLike(product.id)}
+                        onDeleteProduct={() => deleteProduct(product.id)}
                     />
                 ))}
-                {visibleProducts < filterProducts().length && (
-                    <button onClick={showMore} className="text-blue-600 hover:underline focus:outline-none">
+
+
+                {visibleProducts < filteredProducts.length && (
+                    <button onClick={showMore} className="text-blue-600 hover_underline focus_outline_none">
                         Показати ще
                     </button>
                 )}
@@ -181,8 +203,6 @@ const ProductList = () => {
                     </div>
                 </div>
             )}
-            <Footer />
-
         </div>
     );
 };
