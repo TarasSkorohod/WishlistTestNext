@@ -31,7 +31,7 @@ const ProductList = () => {
         );
 
         setFilteredProducts(filtered);
-    }, [searchQuery, selectedCategory, showOnlyWithoutPhoto, productsData]);
+    }, [searchQuery, selectedCategory, showOnlyWithoutPhoto]);
 
     const addNewCategory = () => {
         setCategories((prevCategories) => [...prevCategories, newCategory]);
