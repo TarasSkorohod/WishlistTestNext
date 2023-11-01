@@ -4,7 +4,6 @@ import ProductCard from './ProductCard';
 import Header from "@/components/header/Header";
 import ProductHead from "@/components/productHead/ProductHead";
 import { IconButton } from "@mui/material";
-import Footer from "@/components/footer/Footer";
 import TextField from "@mui/material/TextField";
 import productsData from "@/components/serch/productsData.json";
 
@@ -79,38 +78,36 @@ const ProductList = () => {
                 </div>
                 <div className="mb-4 flex flex-wrap">
 
-                {categories.map((category) => (
-                    <div key={category} className="mr-2 mb-2">
-                            <span
-                                onClick={() => setSelectedCategory(category)}
-                                className={`cursor-pointer p-2 h-[45px] rounded ${
-                                    selectedCategory === category ? 'bg-gray-500 text-white' : 'bg-gray-300 text-black'
-                                }`}
-                                style={{ fontWeight: 700 }}
-                            >
-                                {category === 'all' ? 'Всі' : ` ${category}`}
-                                {category !== 'all' && (
-                                    <IconButton onClick={() => setDeleteCategoryConfirmation(category)} className="p-0 m-0">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            className="w-auto h-auto"
-                                        >
-                                            <path
-                                                d="M17.1428 6.28571H14.5714L13.8367 5.57143H10.1632L9.42855 6.28571H6.85712V7.71428H17.1428M7.59181 17C7.59181 17.3789 7.74662 17.7422 8.02218 18.0101C8.29775 18.2781 8.67149 18.4286 9.0612 18.4286H14.9387C15.3285 18.4286 15.7022 18.2781 15.9778 18.0101C16.2533 17.7422 16.4081 17.3789 16.4081 17V8.42857H7.59181V17Z"
-                                                fill="white"
-                                            />
-                                        </svg>
-                                    </IconButton>
-                                )}
-
-
-                            </span>
-                    </div>
-                ))}
+                    {categories.map((category) => (
+                        <div key={category} className="mr-2 mb-2">
+        <span
+            onClick={() => setSelectedCategory(category)}
+            className={`cursor-pointer p-2 h-[45px] rounded ${
+                selectedCategory === category ? 'bg-gray-500 text-white' : 'bg-gray-300 text-black'
+            }`}
+            style={{ fontWeight: 700 }}
+        >
+            {category === 'all' ? 'Всі' : ` ${category}`}
+            {category !== 'all' && (
+                <IconButton onClick={() => setDeleteCategoryConfirmation(category)} className="p-0 m-0">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className="w-auto h-auto"
+                    >
+                        <path
+                            d="M17.1428 6.28571H14.5714L13.8367 5.57143H10.1632L9.42855 6.28571H6.85712V7.71428H17.1428M7.59181 17C7.59181 17.3789 7.74662 17.7422 8.02218 18.0101C8.29775 18.2781 8.67149 18.4286 9.0612 18.4286H14.9387C15.3285 18.4286 15.7022 18.2781 15.9778 18.0101C16.2533 17.7422 16.4081 17.3789 16.4081 17V8.42857H7.59181V17Z"
+                            fill="white"
+                        />
+                    </svg>
+                </IconButton>
+            )}
+        </span>
+                        </div>
+                    ))}
 
                 <div className="mb-4 ml-auto">
                     <button onClick={() => setIsModalOpen(true)} className="  h-[45px] bg-blue-600 text-white rounded p-2 hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
@@ -137,7 +134,7 @@ const ProductList = () => {
                 </div>
                 {filteredProducts.slice(0, visibleProducts).map((product) => (
                     <ProductCard
-                        key={product.id}
+                        key={product.id} // Add a unique key here
                         product={product}
                         onToggleLike={() => toggleLike(product.id)}
                         onDeleteProduct={() => deleteProduct(product.id)}
