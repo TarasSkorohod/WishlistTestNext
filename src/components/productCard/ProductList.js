@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import Header from "@/components/header/Header";
 import ProductHead from "@/components/productHead/ProductHead";
-import { IconButton } from "@mui/material";
+import {Autocomplete, IconButton} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import productsData from "@/components/serch/productsData.json";
 
@@ -21,12 +21,12 @@ const ProductList = () => {
     const [filteredProducts, setFilteredProducts] = useState(productsData);
 
     useEffect(() => {
-        const searchValue = searchQuery.toLowerCase();
+        const searchValue = searchQuery && typeof searchQuery === 'string' ? searchQuery.toLowerCase() : '';
         const filtered = productsData.filter((product) =>
             (selectedCategory === 'all' || product.category === selectedCategory) &&
             (!showOnlyWithoutPhoto || !product.image) &&
             (searchValue
-                ? (product.name && product.name.toLowerCase().includes(searchValue))
+                ? (product.name && typeof product.name === 'string' && product.name.toLowerCase().includes(searchValue))
                 : true)
         );
 
@@ -68,12 +68,22 @@ const ProductList = () => {
             <div className="container mx-auto py-8">
                 <div className="mb-4 flex flex-wrap">
                     <div className="mb-4">
-                        <TextField
-                            sx={{ width: 300 }}
-                            label="Пошук продукту"
+                        <Autocomplete
+                            options={productsData.map((product) => product.name)}  // Отримати список імен з productsData
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(event, newValue) => {
+                                setSearchQuery(newValue);
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Пошук продукту"
+                                    sx={{ width: 300 }}
+                                />
+                            )}
                         />
+
+
                     </div>
                 </div>
                 <div className="mb-4 flex flex-wrap">
